@@ -69,13 +69,13 @@ jobs:
         name: release
         path: ./release.zip
 
-    - uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
-      if: failure() # Pick up events even if the job fails or is canceled.
+   # - uses: 8398a7/action-slack@v3
+   #   with:
+   #     status: ${{ job.status }}
+   #     fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
+   #   env:
+   #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }} # required
+   #   if: failure() # Pick up events even if the job fails or is canceled.
 
 
   publish_to_nexus:
@@ -133,13 +133,13 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.RELEASE_token }}
         GPG_TTY: $(tty)
-    - uses: 8398a7/action-slack@v3
-      with:
-        status: ${{ job.status }}
-        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
-      env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
-      if: failure() # Pick up events even if the job fails or is canceled.
+    #- uses: 8398a7/action-slack@v3
+    #  with:
+    #    status: ${{ job.status }}
+    #    fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
+    #  env:
+    #    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
+    #  if: failure() # Pick up events even if the job fails or is canceled.
 
 
 
@@ -148,7 +148,7 @@ jobs:
 
 #     runs-on: ubuntu-latest
 #     env:
-#       NAMESPACE: mosipdev
+#       NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
 #       SERVICE_NAME: pre-registration-booking-service
 #       SERVICE_LOCATION: pre-registration/pre-registration-booking-service
 
@@ -184,7 +184,7 @@ jobs:
 #           cd "./${{env.SERVICE_LOCATION}}"
 #           docker build . --build-arg SOURCE=mosip --build-arg COMMIT_HASH=$(git rev-parse HEAD) --build-arg COMMIT_ID=$(git rev-parse --short HEAD) --build-arg BUILD_TIME=${{steps.date.outputs.date}} --file Dockerfile --tag ${{ env.SERVICE_NAME }}
 #       - name: Log into registry
-#         run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password-stdin
+#         run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
         
 #       - name: Push image
 #         run: |
@@ -208,7 +208,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      NAMESPACE: mosipdev
+      NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
       SERVICE_NAME: pre-registration-application-service
       SERVICE_LOCATION: pre-registration/pre-registration-application-service
 
@@ -244,7 +244,7 @@ jobs:
           cd "./${{env.SERVICE_LOCATION}}"
           docker build . --build-arg SOURCE=mosip --build-arg COMMIT_HASH=$(git rev-parse HEAD) --build-arg COMMIT_ID=$(git rev-parse --short HEAD) --build-arg BUILD_TIME=${{steps.date.outputs.date}} --file Dockerfile --tag ${{ env.SERVICE_NAME }}
       - name: Log into registry
-        run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password-stdin
+        run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
         
       - name: Push image
         run: |
@@ -262,20 +262,20 @@ jobs:
           echo VERSION=$VERSION
           docker tag $SERVICE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
-      - uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
-        if: failure() # Pick up events even if the job fails or is canceled.
+     # - uses: 8398a7/action-slack@v3
+     #   with:
+     #     status: ${{ job.status }}
+     #     fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
+     #   env:
+     #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
+     #   if: failure() # Pick up events even if the job fails or is canceled.
 
           #   docker-pre-registration-login-service:
 #     needs: build
 
 #     runs-on: ubuntu-latest
 #     env:
-#       NAMESPACE: mosipdev
+#       NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
 #       SERVICE_NAME: pre-registration-login-service
 #       SERVICE_LOCATION: pre-registration/pre-registration-login-service
 
@@ -310,7 +310,7 @@ jobs:
 #           cd "./${{env.SERVICE_LOCATION}}"
 #           docker build . --build-arg SOURCE=mosip --build-arg COMMIT_HASH=$(git rev-parse HEAD) --build-arg COMMIT_ID=$(git rev-parse --short HEAD) --build-arg BUILD_TIME=${{steps.date.outputs.date}} --file Dockerfile --tag ${{ env.SERVICE_NAME }}
 #       - name: Log into registry
-#         run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password-stdin
+#         run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
         
 #       - name: Push image
 #         run: |
@@ -333,7 +333,7 @@ jobs:
 
     runs-on: ubuntu-latest
     env:
-      NAMESPACE: mosipdev
+      NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
       SERVICE_NAME: pre-registration-batchjob
       SERVICE_LOCATION: pre-registration/pre-registration-batchjob
 
@@ -370,7 +370,7 @@ jobs:
           cd "./${{env.SERVICE_LOCATION}}"
           docker build . --build-arg SOURCE=mosip --build-arg COMMIT_HASH=$(git rev-parse HEAD) --build-arg COMMIT_ID=$(git rev-parse --short HEAD) --build-arg BUILD_TIME=${{steps.date.outputs.date}} --file Dockerfile --tag ${{ env.SERVICE_NAME }}
       - name: Log into registry
-        run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password-stdin
+        run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
         
       - name: Push image
         run: |
@@ -388,20 +388,20 @@ jobs:
           echo VERSION=$VERSION
           docker tag $SERVICE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
-      - uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
-        if: failure() # Pick up events even if the job fails or is canceled.
+    #  - uses: 8398a7/action-slack@v3
+    #    with:
+    #      status: ${{ job.status }}
+    #      fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
+    #    env:
+    #      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
+    #    if: failure() # Pick up events even if the job fails or is canceled.
 
   docker-pre-registration-datasync-service:
     needs: build
 
     runs-on: ubuntu-latest
     env:
-      NAMESPACE: mosipdev
+      NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
       SERVICE_NAME: pre-registration-datasync-service
       SERVICE_LOCATION: pre-registration/pre-registration-datasync-service
 
@@ -437,7 +437,7 @@ jobs:
           cd "./${{env.SERVICE_LOCATION}}"
           docker build . --build-arg SOURCE=mosip --build-arg COMMIT_HASH=$(git rev-parse HEAD) --build-arg COMMIT_ID=$(git rev-parse --short HEAD) --build-arg BUILD_TIME=${{steps.date.outputs.date}} --file Dockerfile --tag ${{ env.SERVICE_NAME }}
       - name: Log into registry
-        run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password-stdin
+        run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
         
       - name: Push image
         run: |
@@ -455,20 +455,20 @@ jobs:
           echo VERSION=$VERSION
           docker tag $SERVICE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
-      - uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
-        if: failure() # Pick up events even if the job fails or is canceled.
+     # - uses: 8398a7/action-slack@v3
+     #   with:
+     #     status: ${{ job.status }}
+     #     fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
+     #   env:
+     #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
+     #   if: failure() # Pick up events even if the job fails or is canceled.
 
           #   docker-pre-registration-demographic-service:
 #     needs: build
 
 #     runs-on: ubuntu-latest
 #     env:
-#       NAMESPACE: mosipdev
+#       NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
 #       SERVICE_NAME: pre-registration-demographic-service
 #       SERVICE_LOCATION: pre-registration/pre-registration-demographic-service
 
@@ -503,7 +503,7 @@ jobs:
 #           cd "./${{env.SERVICE_LOCATION}}"
 #           docker build . --build-arg SOURCE=mosip --build-arg COMMIT_HASH=$(git rev-parse HEAD) --build-arg COMMIT_ID=$(git rev-parse --short HEAD) --build-arg BUILD_TIME=${{steps.date.outputs.date}} --file Dockerfile --tag ${{ env.SERVICE_NAME }}
 #       - name: Log into registry
-#         run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password-stdin
+#         run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
         
 #       - name: Push image
 #         run: |
@@ -526,7 +526,7 @@ jobs:
 
 #     runs-on: ubuntu-latest
 #     env:
-#       NAMESPACE: mosipdev
+#       NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
 #       SERVICE_NAME: pre-registration-document-service
 #       SERVICE_LOCATION: pre-registration/pre-registration-document-service
 
@@ -562,7 +562,7 @@ jobs:
 #           cd "./${{env.SERVICE_LOCATION}}"
 #           docker build . --build-arg SOURCE=mosip --build-arg COMMIT_HASH=$(git rev-parse HEAD) --build-arg COMMIT_ID=$(git rev-parse --short HEAD) --build-arg BUILD_TIME=${{steps.date.outputs.date}} --file Dockerfile --tag ${{ env.SERVICE_NAME }}
 #       - name: Log into registry
-#         run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password-stdin
+#         run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
         
 #       - name: Push image
 #         run: |
@@ -585,7 +585,7 @@ jobs:
 
 #     runs-on: ubuntu-latest
 #     env:
-#       NAMESPACE: mosipdev
+#       NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
 #       SERVICE_NAME: pre-registration-generateqrcode-service
 #       SERVICE_LOCATION: pre-registration/pre-registration-generateqrcode-service
 
@@ -621,7 +621,7 @@ jobs:
 #           cd "./${{env.SERVICE_LOCATION}}"
 #           docker build . --build-arg SOURCE=mosip --build-arg COMMIT_HASH=$(git rev-parse HEAD) --build-arg COMMIT_ID=$(git rev-parse --short HEAD) --build-arg BUILD_TIME=${{steps.date.outputs.date}} --file Dockerfile --tag ${{ env.SERVICE_NAME }}
 #       - name: Log into registry
-#         run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password-stdin
+#         run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
         
 #       - name: Push image
 #         run: |
@@ -644,7 +644,7 @@ jobs:
 
 #     runs-on: ubuntu-latest
 #     env:
-#       NAMESPACE: mosipdev
+#       NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
 #       SERVICE_NAME: pre-registration-notification-service
 #       SERVICE_LOCATION: pre-registration/pre-registration-notification-service
 
@@ -678,7 +678,7 @@ jobs:
 #           cd "./${{env.SERVICE_LOCATION}}"
 #           docker build . --build-arg SOURCE=mosip --build-arg COMMIT_HASH=$(git rev-parse HEAD) --build-arg COMMIT_ID=$(git rev-parse --short HEAD) --build-arg BUILD_TIME=${{steps.date.outputs.date}} --file Dockerfile --tag ${{ env.SERVICE_NAME }}
 #       - name: Log into registry
-#         run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password-stdin
+#         run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
           
 #       - name: Push image
 #         run: |
@@ -700,10 +700,9 @@ jobs:
 
   docker-pre-registration-captcha-service:
     needs: build
-
     runs-on: ubuntu-latest
     env:
-      NAMESPACE: mosipdev
+      NAMESPACE: ${{ secrets.dev_namespace_docker_hub }}
       SERVICE_NAME: pre-registration-captcha-service
       SERVICE_LOCATION: pre-registration/pre-registration-captcha-service
 
@@ -739,7 +738,7 @@ jobs:
           cd "./${{env.SERVICE_LOCATION}}"
           docker build . --build-arg SOURCE=mosip --build-arg COMMIT_HASH=$(git rev-parse HEAD) --build-arg COMMIT_ID=$(git rev-parse --short HEAD) --build-arg BUILD_TIME=${{steps.date.outputs.date}} --file Dockerfile --tag ${{ env.SERVICE_NAME }}
       - name: Log into registry
-        run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password-stdin
+        run: echo "${{ secrets.release_docker_hub }}" | docker login -u ${{ secrets.actor_docker_hub }} --password ${{ secrets.DOCKERHUB_PASSWORD }}
         
       - name: Push image
         run: |
@@ -757,13 +756,13 @@ jobs:
           echo VERSION=$VERSION
           docker tag $SERVICE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
-      - uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
-        if: failure() # Pick up events even if the job fails or is canceled.
+     # - uses: 8398a7/action-slack@v3
+     #   with:
+     #     status: ${{ job.status }}
+     #     fields: repo,message,commit,author,action,eventName,ref,workflow,job,took # selectable (default: repo,message)
+     #   env:
+     #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
+     #   if: failure() # Pick up events even if the job fails or is canceled.
 
   sonar_analysis:
     runs-on: ubuntu-latest
@@ -806,10 +805,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,workflow,job # selectable (default: repo,message)
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
-        if: failure() # Pick up events even if the job fails or is canceled.
+    #  - uses: 8398a7/action-slack@v3
+    #    with:
+    #      status: ${{ job.status }}
+    #      fields: repo,message,commit,workflow,job # selectable (default: repo,message)
+    #    env:
+    #      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEVOPS_WEBHOOK }} # required
+    #    if: failure() # Pick up events even if the job fails or is canceled.
